@@ -21,8 +21,8 @@ excel-interviewer/
 │   ├── evaluator.py         # Answer evaluation logic (Groq API)
 │   ├── interview_flow.py    # Q&A generation flow
 │   ├── report_generator.py  # PDF report creation
-│   ├── static/              # Frontend JS, CSS
-│   ├── templates/           # HTML templates
+│   ├── static/              # Frontend HTML,JS, CSS
+│              
 ├── reports/                 # Generated reports (PDFs)
 ├── requirements.txt         # Python dependencies
 ├── Dockerfile               # Deployment container spec
