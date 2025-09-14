@@ -10,7 +10,7 @@ An AI-powered web application to help candidates practice Excel-related technica
 - ✅ **Constructive Feedback**: Detailed insights to help candidates improve their Excel skills.
 - ✅ **Auto-Generated PDF Report**: Stored in `/reports` directory and downloadable by candidates.
 - ✅ **Web-Based Frontend**: Seamless, user-friendly interface for an interactive interview experience.
-- ✅ **Dockerized Deployment**: Ready for deployment on Render, Railway, or Fly.io.
+- ✅ **Dockerized Deployment**: Ready for deployment on Render .
 
 ## 🏗️ Project Structure
 
@@ -77,37 +77,13 @@ docker run -p 8000:8000 excel-interviewer
 
 App available at: [http://localhost:8000](http://localhost:8000)
 
-## 📑 Sample Report
-
-After completing the mock interview, a PDF report is generated with the following sections:
-
-- **Candidate Info**: Name and session details.
-- **Scores for Each Question**: Individual question scores (0–10).
-- **Average Performance**: Overall score summary.
-- **Detailed Feedback**: Constructive insights for improvement.
-
-### Example Report
-
-```
-Excel Mock Interview Report
-Candidate: John Doe
-Topic: Excel Interview
-
-Q1: What is the difference between SUM and AutoSum in Excel?
-Answer: SUM is manual, AutoSum inserts SUM quickly.
-Score: 8
-Feedback: Correct, could mention AutoSum button location.
-...
-Average Score: 7.5 / 10
-```
 
 ## 🌐 Deployment
 
-The application is configured for deployment on the following platforms:
+The application is configured for deployment on the following platform:
 
 - **Render**
-- **Railway**
-- **Fly.io**
+
 
 The provided `Dockerfile` ensures seamless cloud deployment. Configure environment variables (e.g., `GROQ_API_KEY`, `GROQ_MODEL`) in your hosting platform’s dashboard.
 
