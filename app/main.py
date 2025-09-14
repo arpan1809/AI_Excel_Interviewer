@@ -2,20 +2,28 @@ from fastapi import FastAPI, Form, HTTPException
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 import os
+import tempfile
 
 from app.interview_flow import generate_first_question, generate_followup_question
 from app.evaluator import evaluate_answers_batch
 from app.report_generator import generate_report
 
 app = FastAPI()
+
+
 sessions = {}
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/")
 async def root():
-    return FileResponse(os.path.join("static", "index.html"))
+    index_file = os.path.join("static", "index.html")
+    if not os.path.exists(index_file):
+        return {"message": "Static frontend not found"}
+    return FileResponse(index_file)
 
 
 @app.post("/start_interview")
@@ -37,6 +45,7 @@ async def start_interview(session_id: str = Form(...), candidate_name: str = For
         "total": sessions[session_id]["total"],
     }
 
+
 @app.post("/answer")
 async def answer(session_id: str = Form(...), answer: str = Form("")):
     sess = sessions.get(session_id)
@@ -45,17 +54,20 @@ async def answer(session_id: str = Form(...), answer: str = Form("")):
 
     sess["answers"].append(answer)
 
+    
     if len(sess["answers"]) >= sess["total"]:
-        # Done → evaluate all answers and save PDF
         evaluations = evaluate_answers_batch(sess["questions"], sess["answers"], batch_size=5)
-        pdf_path = generate_report(sess["candidate"], sess["questions"], sess["answers"], evaluations)
-        # Save path in session for later download
-        sess["pdf_path"] = pdf_path
 
         
+        temp_dir = tempfile.gettempdir()
+        pdf_path = os.path.join(temp_dir, f"{sess['candidate']}_report.pdf")
+
+        generate_report(sess["candidate"], sess["questions"], sess["answers"], evaluations)
+        sess["pdf_path"] = pdf_path
+
         return {"message": "Interview complete"}
 
-    
+    # ✅ Otherwise, generate follow-up question
     last_q = sess["questions"][-1]
     last_a = sess["answers"][-1]
 
@@ -75,7 +87,6 @@ async def answer(session_id: str = Form(...), answer: str = Form("")):
     }
 
 
-
 @app.post("/download_report")
 async def download_report(session_id: str = Form(...)):
     sess = sessions.get(session_id)
@@ -83,4 +94,15 @@ async def download_report(session_id: str = Form(...)):
         raise HTTPException(status_code=404, detail="Report not found")
 
     pdf_path = sess["pdf_path"]
+    if not os.path.exists(pdf_path):
+        raise HTTPException(status_code=410, detail="Report expired")
+
     return FileResponse(pdf_path, media_type="application/pdf", filename="Excel_Report.pdf")
+
+
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)
+
