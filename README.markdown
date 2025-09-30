@@ -4,7 +4,7 @@ An AI-powered web application to help candidates practice Excel-related technica
 
 ## 🚀 Features
 
-- ✅ **Dynamic Excel Interview Questions**: Powered by the Groq API for realistic, varied questions.
+- ✅ **Dynamic Excel Interview Questions**: Powered by the Groq-API for realistic, varied questions.
 - ✅ **Adaptive Difficulty**: Questions adjust based on candidate responses for personalized practice.
 - ✅ **Real-Time Answer Evaluation**: Scores responses on a 0–10 scale with immediate feedback.
 - ✅ **Constructive Feedback**: Detailed insights to help candidates improve their Excel skills.
